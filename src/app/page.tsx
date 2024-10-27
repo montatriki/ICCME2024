@@ -102,26 +102,15 @@ export default function Component() {
       <main>
         <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
           <div className="flex flex-col items-center">
-            <Image src="/4.png" alt="Palace" width={1200} height={1200} className="mb-4" /> {/* Updated img tag to Image */}
+            <Image src="/gfv.jpg" alt="Palace" width={1200} height={1200} className="mb-4" /> {/* Updated img tag to Image */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4"
             >
-              <Button
-                size="lg"
-                className="bg-pink-600 text-white font-semibold rounded-lg shadow-lg hover:bg-pink-700 transform transition-all duration-300 ease-in-out hover:scale-105"
-              >
-                Register Now
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white font-semibold rounded-lg shadow-lg hover:bg-white hover:text-black transform transition-all duration-300 ease-in-out hover:scale-105"
-              >
-                Learn More
-              </Button>
+        
+         
             </motion.div>
           </div>
 
@@ -130,6 +119,13 @@ export default function Component() {
           </a>
         </section>
 
+      
+        <section id="program" className="py-20">
+          <div className="container mx-auto px-4">
+            <h3 className="text-3xl font-bold text-center mb-12">Scientific Program</h3>
+            <ScientificProgram />
+          </div>
+        </section>
         <section id="about" className="py-20">
           <div className="container mx-auto px-4">
             <h3 className="text-3xl font-bold text-center mb-12">Key Information</h3>
@@ -157,29 +153,7 @@ export default function Component() {
           </div>
         </section>
 
-        <section id="speakers" className="py-20 bg-black bg-opacity-50">
-          <div className="container mx-auto px-4">
-            <h3 className="text-3xl font-bold text-center mb-12">Featured Speakers</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.1 * i }}
-                  className="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-lg overflow-hidden shadow-lg"
-                >
-                  <Image src={`/placeholder.svg?height=400&width=600`} alt={`Speaker ${i}`} width={600} height={400} className="w-full h-48 object-cover" />
-                  <div className="p-6">
-                    <h4 className="text-xl font-semibold mb-2">Dr. Jane Doe</h4>
-                    <p className="text-gray-300 mb-4">Professor of Chemistry, University XYZ</p>
-                    <p className="text-sm text-gray-400">Keynote: &quot;The Future of Sustainable Materials&quot;</p> {/* Escaped double quotes */}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+      
 
         <section id="venue" className="py-20">
           <div className="container mx-auto px-4">
@@ -210,12 +184,6 @@ export default function Component() {
                 </div>
               </motion.div>
             </div>
-          </div>
-        </section>
-        <section id="program" className="py-20">
-          <div className="container mx-auto px-4">
-            <h3 className="text-3xl font-bold text-center mb-12">Scientific Program</h3>
-            <ScientificProgram />
           </div>
         </section>
       </main>

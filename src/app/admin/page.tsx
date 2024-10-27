@@ -43,7 +43,7 @@ export default function AdminPage() {
       const [username, password] = loginData;
 
       // Replace with your authentication logic
-      if (username === 'admin' && password === 'password') {
+      if (username === 'Monta' && password === 'ICCME2024') {
         setIsAuthenticated(true);
         localStorage.setItem('isAuthenticated', 'true'); // Save to local storage
         Swal.fire('Success', 'Login successful!', 'success');
