@@ -102,7 +102,7 @@ export default function Component() {
       <main>
         <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
           <div className="flex flex-col items-center">
-            <Image src="/gfv.jpg" alt="Palace" width={1200} height={1200} className="mb-4" /> {/* Updated img tag to Image */}
+            <Image src="/trans.jpg" alt="Palace" width={1200} height={1200} className="mb-4" /> {/* Updated img tag to Image */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
