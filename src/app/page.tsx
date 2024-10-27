@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, Calendar, MapPin, Users, Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'; // Importing Image component from Next.js
+import ScientificProgram from '@/components/ScientificProgram'
 
 export default function Component() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -209,6 +210,12 @@ export default function Component() {
                 </div>
               </motion.div>
             </div>
+          </div>
+        </section>
+        <section id="program" className="py-20">
+          <div className="container mx-auto px-4">
+            <h3 className="text-3xl font-bold text-center mb-12">Scientific Program</h3>
+            <ScientificProgram />
           </div>
         </section>
       </main>

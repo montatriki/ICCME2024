@@ -1,11 +1,15 @@
+/* src/app/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Global font settings */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* CSS variables for light and dark themes */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -34,6 +38,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -62,11 +67,13 @@ body {
   }
 }
 
+/* Apply Tailwind utility styles globally */
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border; /* Apply border color */
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground; /* Apply background and text color */
   }
 }
