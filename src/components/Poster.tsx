@@ -1,9 +1,21 @@
-// components/Poster.js
+// components/Poster.tsx
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 
-const Poster = ({ presenter, pdfId }) => {
+// Define the interface for the presenter prop
+interface Presenter {
+  id: string; // The ID of the presenter
+  presenter: string; // The name of the presenter
+  topic: string; // The topic associated with the presenter
+}
+
+interface PosterProps {
+  presenter: Presenter; // Use the defined interface here
+  pdfId: string; // The PDF ID for the document to view
+}
+
+const Poster: React.FC<PosterProps> = ({ presenter, pdfId }) => {
   const handleViewPdf = () => {
     if (pdfId) {
       window.open(`/api/pdfs/${pdfId}`, '_blank'); // Open the PDF in a new tab

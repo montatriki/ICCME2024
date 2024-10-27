@@ -2,12 +2,23 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
 
-const PDFManager = ({ poster }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
+// Define the interface for the poster prop
+interface Poster {
+  presenter: string;
+  topic: string;
+  id: string; // Ensure this matches the type used in your application
+}
+
+interface PDFManagerProps {
+  poster: Poster; // Use the defined interface here
+}
+
+const PDFManager: React.FC<PDFManagerProps> = ({ poster }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFile(event.target.files?.[0] || null);
   };
 
   const handleUpload = async () => {

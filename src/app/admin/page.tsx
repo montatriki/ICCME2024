@@ -18,14 +18,11 @@ export default function AdminPage() {
   // Check local storage for authentication status on mount
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(authStatus === 'true');
   }, []);
 
-
-
-  const handleLoginSubmit = async (e) => {
+  // Specify the event type
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     const { value: loginData } = await Swal.fire({
@@ -36,9 +33,12 @@ export default function AdminPage() {
       `,
       focusConfirm: false,
       preConfirm: () => {
+        const usernameInput = document.getElementById('username') as HTMLInputElement;
+        const passwordInput = document.getElementById('password') as HTMLInputElement;
+
         return [
-          document.getElementById('username').value,
-          document.getElementById('password').value
+          usernameInput.value,
+          passwordInput.value
         ];
       }
     });
@@ -57,6 +57,15 @@ export default function AdminPage() {
     }
   };
 
+  // Function to handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white">
       <header className="fixed w-full z-50 bg-black bg-opacity-50 backdrop-blur-md">
@@ -67,14 +76,12 @@ export default function AdminPage() {
 
       <main className="pt-20 p-4">
         {isAuthenticated ? (
-          <>
-            <section>
-              <motion.h2 className="text-3xl font-semibold text-center mb-6">
-                Current Scientific Program
-              </motion.h2>
-              <ScientificProgramad />
-            </section>
-          </>
+          <section>
+            <motion.h2 className="text-3xl font-semibold text-center mb-6">
+              Current Scientific Program
+            </motion.h2>
+            <ScientificProgramad />
+          </section>
         ) : (
           <section className="flex flex-col items-center justify-center min-h-[60vh]">
             <motion.h2 className="text-3xl font-semibold text-center mb-6">
@@ -84,8 +91,35 @@ export default function AdminPage() {
               onSubmit={handleLoginSubmit}
               className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-6 space-y-4"
             >
-              <Button type="button" onClick={handleLoginSubmit} className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded">
-                Open Login
+              <input
+                type="text"
+                name="posterId"
+                placeholder="Poster ID"
+                value={formData.posterId}
+                onChange={handleChange}
+                className="w-full p-2 rounded"
+              />
+              <input
+                type="text"
+                name="presenter"
+                placeholder="Presenter"
+                value={formData.presenter}
+                onChange={handleChange}
+                className="w-full p-2 rounded"
+              />
+              <input
+                type="text"
+                name="topic"
+                placeholder="Topic"
+                value={formData.topic}
+                onChange={handleChange}
+                className="w-full p-2 rounded"
+              />
+              <Button 
+                type="submit" // Change to submit type
+                className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Login
               </Button>
             </motion.form>
           </section>
