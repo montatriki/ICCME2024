@@ -7,11 +7,7 @@ import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 
 export default function AdminPage() {
-  const [formData, setFormData] = useState({
-    posterId: '',
-    presenter: '',
-    topic: ''
-  });
+
   
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -57,15 +53,6 @@ export default function AdminPage() {
     }
   };
 
-  // Function to handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white">
       <header className="fixed w-full z-50 bg-black bg-opacity-50 backdrop-blur-md">
@@ -91,30 +78,6 @@ export default function AdminPage() {
               onSubmit={handleLoginSubmit}
               className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-6 space-y-4"
             >
-              <input
-                type="text"
-                name="posterId"
-                placeholder="Poster ID"
-                value={formData.posterId}
-                onChange={handleChange}
-                className="w-full p-2 rounded"
-              />
-              <input
-                type="text"
-                name="presenter"
-                placeholder="Presenter"
-                value={formData.presenter}
-                onChange={handleChange}
-                className="w-full p-2 rounded"
-              />
-              <input
-                type="text"
-                name="topic"
-                placeholder="Topic"
-                value={formData.topic}
-                onChange={handleChange}
-                className="w-full p-2 rounded"
-              />
               <Button 
                 type="submit" // Change to submit type
                 className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
