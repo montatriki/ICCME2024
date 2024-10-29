@@ -113,10 +113,10 @@ export default function Component() {
               className="relative"
             >
               <Image
-                src="/nbh.jpg"
+                src="/hb.jpg"
                 alt="Palace"
-                width={1200}
-                height={800}
+                width={800}
+                height={400}
                 className="rounded-lg shadow-2xl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50 rounded-lg" />
