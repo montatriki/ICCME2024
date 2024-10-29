@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button"; // Adjust the import based on your project structure
-import ScientificProgramad from '@/components/ScientificProgramad'; // Ensure this is the correct import
+// import ScientificProgramad from '@/components/ScientificProgramad'; // Ensure this is the correct import
 import { motion } from 'framer-motion';
 import Swal from 'sweetalert2';
 
@@ -67,7 +67,7 @@ export default function AdminPage() {
             <motion.h2 className="text-3xl font-semibold text-center mb-6">
               Current Scientific Program
             </motion.h2>
-            <ScientificProgramad />
+            {/* <ScientificProgramad /> */}
           </section>
         ) : (
           <section className="flex flex-col items-center justify-center min-h-[60vh]">
