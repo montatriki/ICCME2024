@@ -14,46 +14,29 @@ export default async function handler(req, res) {
         return res.status(200).json(result.rows);
 
       case 'POST':
-        const { activities } = req.body; // Expecting activities as an array
+        const { time, activity, posters } = req.body;
 
-        if (!Array.isArray(activities)) {
+        if (!time || !activity || !Array.isArray(posters)) {
           return res.status(400).json({ error: 'Invalid data format for POST request' });
         }
 
-        // Loop through each activity and insert into the database
-        const insertedActivities = [];
-        for (const activity of activities) {
-          const { time, activity: actDescription, posters } = activity;
-
-          // Validate each activity's structure
-          if (!time || !actDescription || !Array.isArray(posters)) {
-            return res.status(400).json({ error: 'Invalid activity data format' });
-          }
-
-          const postResult = await pool.query(
-            'INSERT INTO program_data (time, activity, posters) VALUES ($1, $2, $3) RETURNING *',
-            [time, actDescription, JSON.stringify(posters)]
-          );
-          insertedActivities.push(postResult.rows[0]);
-        }
-
-        return res.status(201).json(insertedActivities); // Return all inserted activities
+        const postResult = await pool.query(
+          'INSERT INTO program_data (time, activity, posters) VALUES ($1, $2, $3) RETURNING *',
+          [time, activity, JSON.stringify(posters)]
+        );
+        return res.status(201).json(postResult.rows[0]);
 
       case 'PUT':
-        const { id, posterId, presenter } = req.body; // Expecting id, posterId, and presenter in the body
+        const { id, time: updateTime, activity: updateActivity, posters: updatePosters } = req.body;
 
-        if (!id || !posterId || !presenter) {
+        if (!id || !updateTime || !updateActivity || !Array.isArray(updatePosters)) {
           return res.status(400).json({ error: 'Invalid data format for PUT request' });
         }
 
-        const updateQuery = `
-          UPDATE program_data 
-          SET posters = jsonb_set(posters, '{${posterId}, presenter}', '"${presenter}"')
-          WHERE id = $1 
-          RETURNING *;
-        `;
-
-        const putResult = await pool.query(updateQuery, [id]);
+        const putResult = await pool.query(
+          'UPDATE program_data SET time = $1, activity = $2, posters = $3 WHERE id = $4 RETURNING *',
+          [updateTime, updateActivity, JSON.stringify(updatePosters), id]
+        );
 
         if (putResult.rows.length === 0) {
           return res.status(404).json({ error: 'Record not found' });
