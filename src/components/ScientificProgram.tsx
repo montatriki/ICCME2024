@@ -50,7 +50,7 @@ export default function ScientificProgram() {
               <p className="text-lg text-gray-300 whitespace-pre-line mb-4">{item.activity}</p>
               {item.posters && (
                 <div className="mt-4 space-y-4">
-                  <p className="text-md font-semibold text-white">Poster Presentations:</p>
+                  <p className="text-lg font-semibold text-white">Poster Presentations:</p>
                   {item.posters.map((poster) => (
                     <Poster key={poster.id} presenter={poster} pdfId={poster.id} />
                   ))}
