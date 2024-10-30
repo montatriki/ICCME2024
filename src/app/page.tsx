@@ -106,12 +106,7 @@ export default function Component() {
       <main>
         <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-50">
           <div className="flex flex-col items-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="relative"
-            >
+          
               <Image
                 src="/hb.jpg"
                 alt="Palace"
@@ -121,7 +116,6 @@ export default function Component() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50 rounded-lg" />
           
-            </motion.div>
           </div>
 
           <a href="#about" className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
