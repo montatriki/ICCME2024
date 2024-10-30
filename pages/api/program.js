@@ -7,49 +7,64 @@ const pool = new Pool({
 export default async function handler(req, res) {
   const { method } = req;
 
-  try {
-    switch (method) {
-      case 'GET':
-        const result = await pool.query('SELECT * FROM program_data');
-        return res.status(200).json(result.rows);
+  switch (method) {
+    case 'GET':
+      try {
+        const { rows } = await pool.query('SELECT * FROM program_items ORDER BY time');
+        res.status(200).json(rows);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error fetching program data' });
+      }
+      break;
 
-      case 'POST':
+    case 'POST':
+      try {
         const { time, activity, posters } = req.body;
-
-        if (!time || !activity || !Array.isArray(posters)) {
-          return res.status(400).json({ error: 'Invalid data format for POST request' });
-        }
-
-        const postResult = await pool.query(
-          'INSERT INTO program_data (time, activity, posters) VALUES ($1, $2, $3) RETURNING *',
+        const { rows } = await pool.query(
+          'INSERT INTO program_items (time, activity, posters) VALUES ($1, $2, $3) RETURNING *',
           [time, activity, JSON.stringify(posters)]
         );
-        return res.status(201).json(postResult.rows[0]);
+        res.status(201).json(rows[0]);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error creating program item' });
+      }
+      break;
 
-      case 'PUT':
-        const { id, time: updateTime, activity: updateActivity, posters: updatePosters } = req.body;
-
-        if (!id || !updateTime || !updateActivity || !Array.isArray(updatePosters)) {
-          return res.status(400).json({ error: 'Invalid data format for PUT request' });
-        }
-
-        const putResult = await pool.query(
-          'UPDATE program_data SET time = $1, activity = $2, posters = $3 WHERE id = $4 RETURNING *',
-          [updateTime, updateActivity, JSON.stringify(updatePosters), id]
+    case 'PUT':
+      try {
+        const { id, time, activity, posters } = req.body;
+        const { rows } = await pool.query(
+          'UPDATE program_items SET time = $1, activity = $2, posters = $3 WHERE id = $4 RETURNING *',
+          [time, activity, JSON.stringify(posters), id]
         );
-
-        if (putResult.rows.length === 0) {
-          return res.status(404).json({ error: 'Record not found' });
+        if (rows.length === 0) {
+          return res.status(404).json({ error: 'Program item not found' });
         }
+        res.status(200).json(rows[0]);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error updating program item' });
+      }
+      break;
 
-        return res.status(200).json(putResult.rows[0]);
+    case 'DELETE':
+      try {
+        const { id } = req.query;
+        const result = await pool.query('DELETE FROM program_items WHERE id = $1', [id]);
+        if (result.rowCount === 0) {
+          return res.status(404).json({ error: 'Program item not found' });
+        }
+        res.status(200).json({ message: 'Program item deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error deleting program item' });
+      }
+      break;
 
-      default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT']);
-        return res.status(405).end(`Method ${method} Not Allowed`);
-    }
-  } catch (error) {
-    console.error(`Error processing ${method} request:`, error.message);
-    return res.status(500).json({ error: `Error processing ${method} request` });
+    default:
+      res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+      res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

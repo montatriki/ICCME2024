@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// next.config.js
+module.exports = {
+  images: {
+    domains: ['www.edsf.fss.rnu.tn'],
+  },
+  // other configurations
 };
-
-export default nextConfig;

@@ -1,28 +1,19 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, Calendar, MapPin, Users, Menu, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import Image from 'next/image'
-import ScientificProgram from '@/components/ScientificProgram'
+import Image from "next/image"
+import { useState, useEffect } from "react"
+import Link from "next/link"
 
 export default function Component() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('home')
+  const [selectedDay, setSelectedDay] = useState(1)
+  const [scrolled, setScrolled] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'speakers', 'venue']
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          return rect.top <= 100 && rect.bottom >= 100
-        }
-        return false
-      })
-      if (currentSection) setActiveSection(currentSection)
+      const isScrolled = window.scrollY > 50
+      setScrolled(isScrolled)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -30,212 +21,198 @@ export default function Component() {
   }, [])
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Speakers', href: '#speakers' },
-    { name: 'Venue', href: '#venue' },
+    { label: "Home", href: "/" },
+    { label: "ATME", href: "/atme" },
+    { label: "Committees", href: "/committees" },
+    { label: "Speakers", href: "/speakers" },
+    { label: "Publication", href: "/publication" },
+    { label: "Program", href: "/program" },
+    { label: "Registration", href: "/registration" },
+    { label: "Gallery", href: "/gallery" },
+    { label: "Venue", href: "/venue" },
+    { label: "Contact", href: "/contact" }
   ]
 
+  const schedule = {
+    registration: {
+      time: "14h-16h",
+      title: "Registration",
+      details: "Registration from 14:00 to 20:00 at Hotel"
+    },
+    openingCeremony: {
+      time: "16h30-16h45",
+      title: "Opening Ceremony",
+      chairs: [
+        { name: "Pr. Rached Ben Hassen" },
+        { name: "Pr. Mounir ELACHABY" }
+      ]
+    },
+    plenaryLecture: {
+      time: "16h45-17h20",
+      title: "Polymer and Biobased Materials",
+      speaker: "Plenary Lecture 1 : Pr. Mounir ELACHABY",
+      affiliation: "(University Mohammed VI Polytechnic-Morocco)"
+    },
+    coffeeBreak: {
+      time: "17h20-17h45",
+      title: "Coffee break"
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <header className="fixed w-full z-50 bg-white shadow-lg">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tighter">ICCME 2024</h1>
-          <nav className="hidden md:block">
-            <ul className="flex space-x-8">
-              {navItems.map((item) => (
-                <li key={item.name}>
-                  <a
-                    href={item.href}
-                    className={`text-sm uppercase tracking-widest font-bold hover:text-blue-600 transition-colors ${
-                      activeSection === item.name.toLowerCase()
-                        ? 'text-blue-600 border-b-2 border-blue-600 pb-2'
-                        : 'text-gray-700'
-                    }`}
-                  >
-                    {item.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden text-gray-900"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </Button>
-        </div>
-      </header>
-
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="fixed inset-0 z-40 bg-white flex items-center justify-center"
-          >
-            <nav>
-              <ul className="flex flex-col items-center space-y-8">
-                {navItems.map((item) => (
-                  <motion.li
-                    key={item.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ delay: 0.1 * navItems.indexOf(item) }}
-                  >
-                    <a
-                      href={item.href}
-                      className="text-3xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item.name}
-                    </a>
-                  </motion.li>
-                ))}
-              </ul>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <main>
-        <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-50">
-          <div className="flex flex-col items-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="relative"
-            >
+    <div className="w-full relative">
+      {/* Fixed Navigation */}
+      <div className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? 'bg-[#0B1126] shadow-lg' : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex-shrink-0">
               <Image
-                src="/hb.jpg"
-                alt="Palace"
-                width={800}
-                height={400}
-                className="rounded-lg shadow-2xl"
+                src="/iccme-logo.png"
+                alt="ICCME2024"
+                width={120}
+                height={40}
+                className="object-contain"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50 rounded-lg" />
-              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                <h2 className="text-4xl md:text-6xl font-extrabold mb-4">ICCME 2024</h2>
-                <p className="text-xl md:text-2xl font-semibold">Shaping the Future of Materials Engineering</p>
-              </div>
-            </motion.div>
-          </div>
-
-          <a href="#about" className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <ChevronDown className="w-12 h-12 text-gray-600" />
-          </a>
-        </section>
-
-        <section id="program" className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <h3 className="text-4xl font-extrabold text-center mb-16 text-gray-900 relative">
-              Scientific Program
-              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-600" />
-            </h3>
-            <ScientificProgram />
-          </div>
-        </section>
-
-        <section id="about" className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <h3 className="text-4xl font-extrabold text-center mb-16 text-gray-900 relative">
-              Key Information
-              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-600" />
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              {[
-                { icon: Calendar, title: 'Date', content: 'November 07-09, 2024' },
-                { icon: MapPin, title: 'Venue', content: 'Iberostar Selection Kuriat Palace, Monastir, Tunisia' },
-                { icon: Users, title: 'Participants', content: '500+ Researchers & Professionals' },
-              ].map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 * index }}
-                  className="bg-white rounded-lg p-8 flex flex-col items-center text-center shadow-xl transform hover:scale-105 transition-transform duration-300"
+            </div>
+            
+            {/* Navigation Items */}
+            <nav className="hidden md:flex space-x-6">
+              {navItems.map((item, index) => (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={`text-sm transition-colors duration-200 ${
+                    scrolled ? 'text-white hover:text-gray-300' : 'text-white hover:text-gray-200'
+                  }`}
                 >
-                  <div className="bg-blue-600 text-white p-4 rounded-full mb-6">
-                    <item.icon className="w-8 h-8" />
-                  </div>
-                  <h4 className="text-2xl font-bold mb-4 text-gray-900">{item.title}</h4>
-                  <p className="text-gray-600">{item.content}</p>
-                </motion.div>
+                  {item.label}
+                </Link>
               ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="venue" className="py-20 bg-white">
-          <div className="container mx-auto px-4">
-            <h3 className="text-4xl font-extrabold text-center mb-16 text-gray-900 relative">
-              Conference Venue
-              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-600" />
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="rounded-lg overflow-hidden shadow-2xl group"
-              >
-                <div className="relative">
-                  <Image
-                    src="/a.png"
-                    alt="Iberostar Selection Kuriat Palace"
-                    width={600}
-                    height={400}
-                    className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h4 className="text-2xl font-bold mb-2 text-white">Iberostar Selection Kuriat Palace</h4>
-                    <p className="text-gray-200">Experience luxury and comfort at our state-of-the-art conference venue.</p>
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="rounded-lg overflow-hidden shadow-2xl group"
-              >
-                <div className="relative">
-                  <Image
-                    src="/s.png"
-                    alt="Monastir, Tunisia"
-                    width={600}
-                    height={400}
-                    className="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h4 className="text-2xl font-bold mb-2 text-white">Monastir, Tunisia</h4>
-                    <p className="text-gray-200">Explore the rich history and beautiful landscapes of Monastir during your stay.</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="bg-gray-900 py-12 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-lg font-semibold mb-4">&copy; 2024 ICCME. All rights reserved.</p>
-          <div className="flex justify-center space-x-6">
-            <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-blue-400 transition-colors">Contact Us</a>
+            </nav>
           </div>
         </div>
-      </footer>
+      </div>
+
+      {/* Hero Section with Main Image */}
+      <div className="relative w-full h-[600px]">
+        {!imageError ? (
+          <Image
+            src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/css/venue-gallery/210.jpg"
+            alt="Conference Venue"
+            fill
+            className="object-cover"
+            onError={() => setImageError(true)}
+            priority
+            sizes="100vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <p className="text-gray-600">Image unavailable</p>
+          </div>
+        )}
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-40">
+          <div className="max-w-7xl mx-auto px-4 h-full flex items-center">
+            <div className="text-white">
+              <h1 className="text-5xl font-bold mb-4">ICCME 2024</h1>
+              <p className="text-xl">International Conference on Chemistry Materials and Environment</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Programs Section */}
+      <div className="max-w-4xl mx-auto px-4 py-16">
+        <h1 className="text-center text-3xl font-bold mb-2">PROGRAMS</h1>
+        <p className="text-center text-xl text-gray-600 mb-8">ICCME2024</p>
+        <div className="h-1 w-16 bg-red-500 mx-auto mb-8"></div>
+
+        {/* Day Selection */}
+        <div className="flex justify-center gap-4 mb-6">
+          {[1, 2, 3].map((day) => (
+            <Button
+              key={day}
+              variant={selectedDay === day ? "default" : "secondary"}
+              className={`px-8 py-2 rounded-full ${
+                selectedDay === day
+                  ? "bg-[#ff1744] hover:bg-[#ff1744]/90"
+                  : "bg-[#1a237e] hover:bg-[#1a237e]/90"
+              } text-white`}
+              onClick={() => setSelectedDay(day)}
+            >
+              Day {day}
+            </Button>
+          ))}
+        </div>
+
+        <p className="text-center text-gray-600 italic mb-4">
+          November 7th ,8th ,9th 2024
+        </p>
+        <p className="text-center text-red-500 hover:underline cursor-pointer mb-8">
+          You can download this program
+        </p>
+
+        {/* Schedule */}
+        <div className="space-y-6">
+          {/* Registration */}
+          <div className="border-b pb-4">
+            <div className="text-lg font-semibold text-gray-700">
+              {schedule.registration.time}
+            </div>
+            <h3 className="text-xl font-bold text-[#1a237e]">
+              {schedule.registration.title}
+            </h3>
+            <p className="text-gray-600 italic">
+              {schedule.registration.details}
+            </p>
+          </div>
+
+          {/* Opening Ceremony */}
+          <div className="border-b pb-4">
+            <div className="text-lg font-semibold text-gray-700">
+              {schedule.openingCeremony.time}
+            </div>
+            <h3 className="text-xl font-bold text-[#1a237e]">
+              {schedule.openingCeremony.title}
+            </h3>
+            {schedule.openingCeremony.chairs.map((chair, index) => (
+              <p key={index} className="text-gray-600 italic">
+                Chair : {chair.name}
+              </p>
+            ))}
+          </div>
+
+          {/* Plenary Lecture */}
+          <div className="border-b pb-4">
+            <div className="text-lg font-semibold text-gray-700">
+              {schedule.plenaryLecture.time}
+            </div>
+            <h3 className="text-xl font-bold text-[#1a237e]">
+              {schedule.plenaryLecture.title}
+            </h3>
+            <p className="text-gray-600 italic">
+              {schedule.plenaryLecture.speaker}
+            </p>
+            <p className="text-gray-600 italic">
+              {schedule.plenaryLecture.affiliation}
+            </p>
+          </div>
+
+          {/* Coffee Break */}
+          <div className="border-b pb-4">
+            <div className="text-lg font-semibold text-gray-700">
+              {schedule.coffeeBreak.time}
+            </div>
+            <h3 className="text-xl font-bold text-[#1a237e]">
+              {schedule.coffeeBreak.title}
+            </h3>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
