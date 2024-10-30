@@ -27,7 +27,7 @@ const Poster: React.FC<PosterProps> = ({ presenter, pdfId }) => {
       <p className="text-sm text-white">
         <span className="font-semibold text-pink-400">{presenter.id}:</span> {presenter.presenter}
       </p>
-      <p className="text-sm text-gray-400">{presenter.topic}</p>
+      <p className="text-l text-gray-400">{presenter.topic}</p>
       <Button 
         onClick={handleViewPdf} 
         className="mt-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1"
