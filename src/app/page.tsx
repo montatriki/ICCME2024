@@ -120,10 +120,7 @@ export default function Component() {
                 className="rounded-lg shadow-2xl"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50 rounded-lg" />
-              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                <h2 className="text-4xl md:text-6xl font-extrabold mb-4">ICCME 2024</h2>
-                <p className="text-xl md:text-2xl font-semibold">Shaping the Future of Materials Engineering</p>
-              </div>
+          
             </motion.div>
           </div>
 
