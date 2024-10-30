@@ -104,9 +104,8 @@ export default function Component() {
       </AnimatePresence>
 
       <main>
-        <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-50">
-          <div className="flex flex-col items-center">
-          
+       <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden ">
+          <div className="flex flex-col items-center">         
               <Image
                 src="/hb.jpg"
                 alt="Palace"
@@ -114,8 +113,8 @@ export default function Component() {
                 height={400}
                 className="rounded-lg shadow-2xl"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-50 rounded-lg" />
-          
+              <div className="absolute inset-0 bg-gradient-to-t  rounded-lg" />          
+           
           </div>
 
           <a href="#about" className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
