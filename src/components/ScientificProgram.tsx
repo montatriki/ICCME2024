@@ -47,7 +47,7 @@ export default function ScientificProgram() {
               className="border border-white/20 rounded-lg p-4 bg-gray-900 shadow-lg"
             >
               <p className="text-lg font-semibold mb-2 text-pink-400">{item.time}</p>
-              <p className="text-sm text-gray-300 whitespace-pre-line mb-4">{item.activity}</p>
+              <p className="text-lg text-gray-300 whitespace-pre-line mb-4">{item.activity}</p>
               {item.posters && (
                 <div className="mt-4 space-y-4">
                   <p className="text-md font-semibold text-white">Poster Presentations:</p>
