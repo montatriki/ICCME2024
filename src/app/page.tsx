@@ -22,15 +22,15 @@ export default function Component() {
 
   const navItems = [
     { label: "Home", href: "/" },
-    { label: "ATME", href: "/atme" },
-    { label: "Committees", href: "/committees" },
-    { label: "Speakers", href: "/speakers" },
-    { label: "Publication", href: "/publication" },
-    { label: "Program", href: "/program" },
+    { label: "ATME", href: "" },
+    { label: "Committees", href: "http://www.edsf.fss.rnu.tn/ICCME2024/committees.php" },
+    { label: "Speakers", href: "http://www.edsf.fss.rnu.tn/ICCME2024/speakers.php" },
+    { label: "Publication", href: "http://www.edsf.fss.rnu.tn/ICCME2024/publication.php" },
+    { label: "Program", href: "/" },
     { label: "Registration", href: "/registration" },
     { label: "Gallery", href: "/gallery" },
-    { label: "Venue", href: "/venue" },
-    { label: "Contact", href: "/contact" }
+    { label: "Venue", href: "http://www.edsf.fss.rnu.tn/ICCME2024/venue.php" },
+    { label: "Contact", href: "/http://www.edsf.fss.rnu.tn/ICCME2024/contact.php" }
   ];
 
   return (
@@ -76,7 +76,7 @@ export default function Component() {
         <div className="w-full">
           <div className="relative w-full h-auto">
             <Image 
-              src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/css/venue-gallery/210.jpg"
+              src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/css/venue-gallery/201.png"
               alt="Conference Venue"
               layout="responsive"
               width={1920}
@@ -91,7 +91,7 @@ export default function Component() {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center space-y-2 mb-12">
-            <h2 className="text-3xl font-bold">PROGRAMS</h2>
+            <h2 className="text-3xl font-bold">PROGRAM</h2>
             <p className="text-xl text-gray-600">ICCME2024</p>
             <div className="h-1 w-16 bg-red-500 mx-auto"></div>
           </div>
