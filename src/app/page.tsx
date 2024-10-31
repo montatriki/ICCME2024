@@ -151,18 +151,20 @@ export default function Component() {
 
       {/* Partners Section */}
       <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-8">
-            <Image 
-              src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/img/supporters/partenaireall.jpg"
-              alt="Partner"
-              width={100}
-              height={100}
-              className="object-contain"
-            />
-          </div>
-        </div>
-      </section>
+  <div className="container mx-auto px-4">
+    <div className="w-full">
+      <Image 
+        src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/img/supporters/partenaireall.jpg"
+        alt="Partner"
+        layout="responsive"
+        width={1920} // Set this to the original width of the image
+        height={1080} // Set this to the original height of the image
+        className="object-contain"
+      />
+    </div>
+  </div>
+</section>
+
 
       {/* Footer */}
       <footer className="bg-[#0B1126] text-white py-12">
@@ -182,7 +184,7 @@ export default function Component() {
             <div>
               <h4 className="font-bold mb-4">CONTACT US</h4>
               <div className="space-y-2">
-                <p>Address: (ATMR) Association Tunisienne des Materiaux et de l'Environnement</p>
+                <p>Address: (ATMR) Association Tunisienne des Materiaux et de l&apos;Environnement</p>
                 <p>Route 8011 ELGhazela Technopark Ariana Tunisia</p>
                 <p>Email: info@example.com</p>
                 <p>Phone: +216 93 307 532</p>
