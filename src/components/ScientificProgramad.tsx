@@ -162,7 +162,7 @@ export default function ScientificProgram() {
                               presenter: poster.presenter, // Adjust based on your actual data structure
                               topic: poster.topic 
                             }} 
-                            pdfId={poster.pdfId} 
+                            pdfId={'P' + poster.pdfId}
                           />
                           <PDFManager poster={poster} />
                         </div>

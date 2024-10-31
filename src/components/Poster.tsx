@@ -32,7 +32,7 @@ const Poster: React.FC<PosterProps> = ({ presenter, pdfId }) => {
         variant="outline"
       >
         <Eye className="w-4 h-4 mr-2" />
-        View PDF her
+        View PDF
       </Button>
     </div>
   );

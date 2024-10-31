@@ -167,7 +167,7 @@ export default function Component() {
                               presenter: poster.presenter,
                               topic: poster.topic
                             }}
-                            pdfId={poster.pdfId}
+                            pdfId={'P' + poster.pdfId}
                           />
                         </div>
                       ))}
