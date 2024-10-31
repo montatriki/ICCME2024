@@ -3,12 +3,28 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Coffee, Users, Menu } from "lucide-react"; // Import Menu icon for mobile
+import {  Menu } from "lucide-react";
+import Poster from "@/components/Poster";
+
+interface PosterItem {
+  id: string;
+  pdfId: string;
+  presenter: string;
+  topic: string;
+}
+
+interface ProgramItem {
+  id: number;
+  time: string;
+  activity: string;
+  posters: PosterItem[];
+}
 
 export default function Component() {
   const [selectedDay, setSelectedDay] = useState(1);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false); // Toggle state for mobile menu
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [programData, setProgramData] = useState<ProgramItem[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +34,23 @@ export default function Component() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchProgramData = async () => {
+      try {
+        const response = await fetch('/api/program');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setProgramData(data);
+      } catch (error) {
+        console.error('Error fetching program data:', error);
+      }
+    };
+
+    fetchProgramData();
   }, []);
 
   const navItems = [
@@ -30,7 +63,7 @@ export default function Component() {
     { label: "Registration", href: "/registration" },
     { label: "Gallery", href: "/gallery" },
     { label: "Venue", href: "http://www.edsf.fss.rnu.tn/ICCME2024/venue.php" },
-    { label: "Contact", href: "/http://www.edsf.fss.rnu.tn/ICCME2024/contact.php" }
+    { label: "Contact", href: "http://www.edsf.fss.rnu.tn/ICCME2024/contact.php" }
   ];
 
   return (
@@ -40,7 +73,7 @@ export default function Component() {
         <nav className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="text-2xl font-bold text-red-500">ICCME</Link>
-            
+
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-6">
               {navItems.map((item, index) => (
@@ -75,7 +108,7 @@ export default function Component() {
       <section className="pt-16">
         <div className="w-full">
           <div className="relative w-full h-auto">
-            <Image 
+            <Image
               src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/css/venue-gallery/201.png"
               alt="Conference Venue"
               layout="responsive"
@@ -102,92 +135,102 @@ export default function Component() {
               <Button
                 key={day}
                 onClick={() => setSelectedDay(day)}
-                className={`px-8 py-2 rounded-full ${selectedDay === day ? "bg-red-500" : "bg-[#1a237e]"} text-white hover:opacity-90`}
+                className={`px-10 py-5 rounded-full ${selectedDay === day ? "bg-red-500" : "bg-[#1a237e]"} text-white hover:opacity-90`}
               >
                 Day {day}
               </Button>
             ))}
           </div>
 
-          <div className="text-center mb-8">
-            <p className="text-gray-600 italic mb-2">November 7th, 8th-9th 2024</p>
-            <p className="text-red-500 hover:underline cursor-pointer">You can download this program</p>
-          </div>
-
-          {/* Schedule */}
+          {/* Updated Program Content and Posters */}
           <div className="space-y-6">
-            {[
-              { time: "14h-15h", title: "Registration", description: "Registration from 14:00 to 20:00 at Hotel" },
-              { time: "16h30-16h45", title: "Opening Ceremony", chairs: ["Pr. Rached Ben Hassen", "Pr. Mounir ELACHABY"] },
-              { time: "16h45-17h20", title: "Polymer and Biobased Materials", description: "Plenary Lecture 1 : Pr. Mounir ELACHABY (University Mohammed VI Polytechnic-Morocco)" },
-              { time: "17h20-17h45", title: "Coffee break", icon: <Coffee className="h-4 w-4 text-gray-600" /> },
-              { time: "17h45-18h45", title: "First poster session (P1)" },
-              { time: "19h00", title: "Dinner" },
-            ].map(({ time, title, description, chairs, icon }, index) => (
-              <div key={index} className="flex gap-4 pb-4 border-b">
-                <div className="w-24 text-right">
-                  <span className="text-gray-600 font-semibold">{time}</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-[#1a237e]">{title}</h3>
-                  {description && <p className="text-gray-600 italic">{description}</p>}
-                  {chairs && (
-                    <div className="space-y-1">
-                      {chairs.map((chair, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          <p className="text-gray-600 italic">Chair : {chair}</p>
+            {programData.map((item) => (
+              <div
+                key={item.id}
+                className="border border-white/20 rounded-lg p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white shadow-2xl transition-shadow duration-300 hover:shadow-3xl"
+              >
+                <p className="text-xl font-semibold text-white">{item.time}</p>
+                <p className="text-gray-300 mt-2 whitespace-pre-line">{item.activity}</p>
+
+                {item.posters && item.posters.length > 0 && (
+                  <div className="mt-6 space-y-4">
+                    <h3 className="text-lg font-semibold text-white">Poster Presentations:</h3>
+                    <div className="grid gap-4">
+                      {item.posters.map((poster) => (
+                        <div
+                          key={poster.id}
+                          className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/30 hover:bg-white/20 transition-colors duration-300"
+                        >
+                          <Poster
+                            presenter={{
+                              id: poster.id,
+                              presenter: poster.presenter,
+                              topic: poster.topic
+                            }}
+                            pdfId={poster.pdfId}
+                          />
                         </div>
                       ))}
                     </div>
-                  )}
-                  {icon}
-                </div>
+                  </div>
+                )}
               </div>
             ))}
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* Partners Section */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="w-full">
+            <Image
+              src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/img/supporters/partenaireall.jpg"
+              alt="Partner"
+              layout="responsive"
+              width={1920}
+              height={1080}
+              className="object-contain"
+            />
           </div>
         </div>
       </section>
 
-      {/* Partners Section */}
-      <section className="py-12">
-  <div className="container mx-auto px-4">
-    <div className="w-full">
-      <Image 
-        src="http://www.edsf.fss.rnu.tn/ICCME2024/assets/img/supporters/partenaireall.jpg"
-        alt="Partner"
-        layout="responsive"
-        width={1920} // Set this to the original width of the image
-        height={1080} // Set this to the original height of the image
-        className="object-contain"
-      />
-    </div>
-  </div>
-</section>
-
-
       {/* Footer */}
-      <footer className="bg-[#0B1126] text-white py-12">
+      <footer className="bg-[#0B1126] text-white py-12 relative">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="text-red-500">📍</span> TheEvent
-              </h3>
-              <div className="space-y-2">
-                <h4 className="font-bold">IMPORTANT DATES</h4>
-                <p>Call for Abstracts/Registration Open: Jun 1, 2024</p>
-                <p>Final deadline of Abstract Submission: September 30, 2024</p>
-                <p>Notification of participation acceptance: October 1, 2024</p>
+              <div className="flex items-center gap-2 mb-2">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 text-red-500" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                </svg>
+                <h3 className="text-xl font-bold">TheEvent</h3>
+              </div>
+              <div className="space-y-4">
+                <h4 className="font-bold relative inline-block">
+                  IMPORTANT DATES
+                  <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-red-500"></span>
+                </h4>
+                <div className="space-y-2 mt-4">
+                  <p>Call for Abstracts/Registration Open : Jun 1, 2024</p>
+                  <p>Final deadline of Abstract Submission : September 30, 2024</p>
+                  <p>Notification of participation acceptance : October 1, 2024</p>
+                </div>
               </div>
             </div>
             <div>
-              <h4 className="font-bold mb-4">CONTACT US</h4>
+              <h4 className="font-bold relative inline-block mb-6">
+                CONTACT US
+                <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-red-500"></span>
+              </h4>
               <div className="space-y-2">
-                <p>Address: (ATMR) Association Tunisienne des Materiaux et de l&apos;Environnement</p>
-                <p>Route 8011 ELGhazela Technopark Ariana Tunisia</p>
-                <p>Email: info@example.com</p>
-                <p>Phone: +216 93 307 532</p>
+                <p>Address: (ATME) Association Tunisienne des Matériaux et de l&apos;Environnement</p>
+                <p>ISSBAT, 9 Av. Dr Zouheir SAFI 1006, Tunis TUNISIE</p>
+                <p>Phone: +216 21 999 999</p>
+                <p>Email: contact@iccme2024.com</p>
               </div>
             </div>
           </div>
