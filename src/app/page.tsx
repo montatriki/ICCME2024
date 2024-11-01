@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {  Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Poster from "@/components/Poster";
 
 interface PosterItem {
@@ -39,7 +39,7 @@ export default function Component() {
   useEffect(() => {
     const fetchProgramData = async () => {
       try {
-        const response = await fetch('/api/program');
+        const response = await fetch(`/api/program?day=${selectedDay}`); // Pass the selected day as a query parameter
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -51,7 +51,8 @@ export default function Component() {
     };
 
     fetchProgramData();
-  }, []);
+  }, [selectedDay]); // Refetch data when selectedDay changes
+
 
   const navItems = [
     { label: "Home", href: "/" },
