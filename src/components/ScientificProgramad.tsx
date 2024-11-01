@@ -232,24 +232,27 @@ export default function ScientificProgram() {
                             pdfId={poster.id}
                           />
                           <PDFManager poster={poster} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div className="mt-4 space-x-2">
-                    <button 
-                      onClick={() => handleEdit(item.id)} 
+                       
+                          <div className="mt-4 space-x-2">
+                          <button 
+                       onClick={() => handleEdit(item.id)} 
                       className="bg-blue-500 text-white px-2 py-1 rounded"
-                    >
+                       >
                       Edit
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(item.id)} 
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(item.id)} 
                       className="bg-red-500 text-white px-2 py-1 rounded"
                     >
                       Delete
                     </button>
                   </div>
+                       
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                
                 </>
               )}
             </motion.div>
