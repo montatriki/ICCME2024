@@ -4,14 +4,14 @@ import Poster from './Poster';
 import PDFManager from './PDFManager';
 
 interface PosterItem {
-  id: string; // Make sure this matches the expected type for poster ID
+  id: string;
   pdfId: string;
-  presenter: string; // Assuming this property exists
-  topic: string; // Assuming this property exists
+  presenter: string;
+  topic: string;
 }
 
 interface ProgramItem {
-  id: number; // or string, depending on your implementation
+  id: number;
   time: string;
   activity: string;
   posters: PosterItem[];
@@ -27,7 +27,6 @@ interface AddFormProps {
   onAdd: () => void;
 }
 
-// Define AddForm before using it
 function AddForm({ item, onChange, onAdd }: AddFormProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,7 +38,7 @@ function AddForm({ item, onChange, onAdd }: AddFormProps) {
     if (item.time && item.activity) {
       onAdd();
     } else {
-      alert("Please fill in all fields."); // Or use a more user-friendly approach
+      alert("Please fill in all fields.");
     }
   };
 
@@ -69,14 +68,15 @@ export default function ScientificProgram() {
   const [programData, setProgramData] = useState<ProgramItem[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newItem, setNewItem] = useState({ time: '', activity: '', posters: [] as PosterItem[] });
+  const [selectedDay, setSelectedDay] = useState(1); // Default to Day 1
 
   useEffect(() => {
-    fetchProgramData();
-  }, []);
+    fetchProgramData(selectedDay);
+  }, [selectedDay]);
 
-  const fetchProgramData = async () => {
+  const fetchProgramData = async (day: number) => {
     try {
-      const response = await fetch('/api/program');
+      const response = await fetch(`/api/program?day=${day}`); // Update the endpoint to accept the day parameter
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -92,23 +92,20 @@ export default function ScientificProgram() {
   };
 
   const handleSave = async (id: number | string, updatedItem: ProgramItem) => {
-    const { id: updatedId, ...rest } = updatedItem; // Rename id to updatedId
-    console.log('Updating item with id:', updatedId); // Use the new variable name here.
-
-    // Proceed with your fetch call
+    const { id: updatedId, ...rest } = updatedItem;
     await fetch('/api/program', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, ...rest }), // id passed from the function parameter
+      body: JSON.stringify({ id, ...rest }),
     });
     setEditingId(null);
-    fetchProgramData();
+    fetchProgramData(selectedDay);
   };
 
   const handleDelete = async (id: number | string) => {
     try {
       await fetch(`/api/program?id=${id}`, { method: 'DELETE' });
-      fetchProgramData();
+      fetchProgramData(selectedDay);
     } catch (error) {
       console.error('Error deleting item:', error);
     }
@@ -122,10 +119,14 @@ export default function ScientificProgram() {
         body: JSON.stringify(newItem),
       });
       setNewItem({ time: '', activity: '', posters: [] });
-      fetchProgramData();
+      fetchProgramData(selectedDay);
     } catch (error) {
       console.error('Error adding item:', error);
     }
+  };
+
+  const handleDayChange = (day: number) => {
+    setSelectedDay(day);
   };
 
   return (
@@ -136,6 +137,14 @@ export default function ScientificProgram() {
         transition={{ duration: 0.5 }}
       >
         <h4 className="text-2xl font-semibold mb-6 text-center text-white">November 7th, 2024 (Afternoon)</h4>
+        
+        {/* Day Selection Buttons */}
+        <div className="flex justify-center space-x-4 mb-6">
+          <button onClick={() => handleDayChange(1)} className={`px-4 py-2 rounded ${selectedDay === 1 ? 'bg-blue-500' : 'bg-gray-700'}`}>Day 1</button>
+          <button onClick={() => handleDayChange(2)} className={`px-4 py-2 rounded ${selectedDay === 2 ? 'bg-blue-500' : 'bg-gray-700'}`}>Day 2</button>
+          <button onClick={() => handleDayChange(3)} className={`px-4 py-2 rounded ${selectedDay === 3 ? 'bg-blue-500' : 'bg-gray-700'}`}>Day 3</button>
+        </div>
+        
         <div className="space-y-6">
           {programData.map((item, index) => (
             <motion.div
@@ -158,11 +167,11 @@ export default function ScientificProgram() {
                         <div key={poster.id} className="space-y-2">
                           <Poster 
                             presenter={{ 
-                              id: poster.id, // Ensure this is the correct type for Presenter
-                              presenter: poster.presenter, // Adjust based on your actual data structure
+                              id: poster.id, 
+                              presenter: poster.presenter, 
                               topic: poster.topic 
                             }} 
-                            pdfId={'P' + poster.pdfId}
+                            pdfId={poster.id}
                           />
                           <PDFManager poster={poster} />
                         </div>
@@ -187,7 +196,6 @@ export default function ScientificProgram() {
   );
 }
 
-// Make sure EditForm is defined or imported as well
 function EditForm({ item, onSave, onCancel }: { item: ProgramItem; onSave: (id: number | string, updatedItem: ProgramItem) => void; onCancel: () => void; }) {
   const [editedItem, setEditedItem] = useState(item);
 
