@@ -11,27 +11,13 @@ export default async function handler(req, res) {
     case 'GET':
       try {
         const { day } = req.query; // Capture 'day' from the query string
-        const { rows } = await pool.query('SELECT * FROM program_items WHERE day = $1 ORDER BY time', [day]);
+        const { rows } = await pool.query('SELECT * FROM program_items WHERE day = $1 ORDER BY id', [day]);
         res.status(200).json(rows);
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error fetching program data' });
       }
       break;
-
-    // case 'POST':
-    //   try {
-    //     const { time, activity, posters, day} = req.body;
-    //     const { rows } = await pool.query(
-    //       'INSERT INTO program_items (time, activity, posters,day) VALUES ($1, $2, $3,$4) RETURNING *',
-    //       [time, activity, JSON.stringify(posters),day]
-    //     );
-    //     res.status(201).json(rows[0]);
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ error: 'Error creating program item' });
-    //   }
-    //   break;
 
     case 'POST':
   try {

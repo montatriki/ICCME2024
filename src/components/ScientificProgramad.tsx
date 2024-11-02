@@ -23,7 +23,7 @@ interface AddFormProps {
     activity: string;
     posters: PosterItem[];
   };
-  onChange: React.Dispatch<React.SetStateAction<{ time: string; activity: string; posters: PosterItem[]; }>>;
+  onChange: React.Dispatch<React.SetStateAction<{ time: string; activity: string; posters: PosterItem[] }>>;
   onAdd: () => void;
 }
 
@@ -153,15 +153,25 @@ export default function ScientificProgram() {
 
   const handleAdd = async () => {
     try {
-      await fetch('/api/program', {
+      // Include the selectedDay in the newItem object
+      const itemWithDay = { ...newItem, day: selectedDay };
+      
+      const response = await fetch('/api/program', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newItem),
+        body: JSON.stringify(itemWithDay),
       });
-      setNewItem({ time: '', activity: '', posters: [] });
-      fetchProgramData1(selectedDay);
+
+      if (response.ok) {
+        setNewItem({ time: '', activity: '', posters: [] });
+        fetchProgramData1(selectedDay);
+        alert('Item added successfully!');
+      } else {
+        throw new Error('Failed to add item');
+      }
     } catch (error) {
       console.error('Error adding item:', error);
+      alert('An error occurred while adding the item.');
     }
   };
 
@@ -220,7 +230,6 @@ export default function ScientificProgram() {
                   <p className="text-sm text-gray-300 whitespace-pre-line mb-4">{item.activity}</p>
                   {item.posters && (
                     <div className="mt-4 space-y-4">
-                      <p className="text-md font-semibold text-white">Poster Presentations:</p>
                       {item.posters.map((poster) => (
                         <div key={poster.id} className="space-y-2">
                           <Poster 
@@ -232,27 +241,24 @@ export default function ScientificProgram() {
                             pdfId={poster.id}
                           />
                           <PDFManager poster={poster} />
-                       
                           <div className="mt-4 space-x-2">
-                          <button 
-                       onClick={() => handleEdit(item.id)} 
-                      className="bg-blue-500 text-white px-2 py-1 rounded"
-                       >
-                      Edit
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(item.id)} 
-                      className="bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                       
+                            <button 
+                              onClick={() => handleEdit(item.id)} 
+                              className="bg-blue-500 text-white px-2 py-1 rounded"
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(item.id)} 
+                              className="bg-red-500 text-white px-2 py-1 rounded"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
-                
                 </>
               )}
             </motion.div>
