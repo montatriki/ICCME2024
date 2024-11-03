@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Poster from './Poster';
 import PDFManager from './PDFManager';
+import Timee from '../components/Timee';
 
 interface PosterItem {
   id: string;
@@ -227,7 +228,10 @@ export default function ScientificProgram() {
               ) : (
                 <>
                   <p className="text-lg font-semibold mb-2 text-pink-400">{item.time}</p>
+
                   <p className="text-sm text-gray-300 whitespace-pre-line mb-4">{item.activity}</p>
+                  <Timee time={item.time} />
+
                   {item.posters && (
                     <div className="mt-4 space-y-4">
                       {item.posters.map((poster) => (

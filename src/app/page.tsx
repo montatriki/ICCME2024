@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import Poster from "@/components/Poster";
+import Timee from '../components/Timee';
 
 interface PosterItem {
   id: string;
@@ -152,6 +153,7 @@ export default function Component() {
               >
                 <p className="text-xl font-semibold text-white">{item.time}</p>
                 <p className="text-gray-300 mt-2 whitespace-pre-line">{item.activity}</p>
+                <Timee time={item.time} />
 
                 {item.posters && item.posters.length > 0 && (
                   <div className="mt-6 space-y-4">
