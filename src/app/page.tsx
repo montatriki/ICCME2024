@@ -157,7 +157,6 @@ export default function Component() {
 
                 {item.posters && item.posters.length > 0 && (
                   <div className="mt-6 space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Poster Presentations:</h3>
                     <div className="grid gap-4">
                       {item.posters.map((poster) => (
                         <div
