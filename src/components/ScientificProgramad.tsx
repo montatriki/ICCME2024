@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Poster from './Poster';
 import PDFManager from './PDFManager';
-import Timee from '../components/Timee';
-// import PDFManagertow from './PDFManagertow';
+import Timee from './Timee';
+import { PDFManagertow } from './PDFManagertow';
 
 interface PosterItem {
   id: string;
@@ -66,10 +66,10 @@ function AddForm({ item, onChange, onAdd }: AddFormProps) {
   );
 }
 
-function EditForm({ item, onSave, onCancel }: { 
-  item: ProgramItem; 
-  onSave: (id: number | string, updatedItem: ProgramItem) => void; 
-  onCancel: () => void; 
+function EditForm({ item, onSave, onCancel }: {
+  item: ProgramItem;
+  onSave: (id: number | string, updatedItem: ProgramItem) => void;
+  onCancel: () => void;
 }) {
   const [editedItem, setEditedItem] = useState(item);
 
@@ -108,8 +108,24 @@ export default function ScientificProgram() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newItem, setNewItem] = useState({ time: '', activity: '', posters: [] as PosterItem[] });
   const [selectedDay, setSelectedDay] = useState(1);
+  const [pdfExistence, setPdfExistence] = useState<Record<number, boolean>>({});
 
-  const fetchProgramData1 = async (day: number = selectedDay) => {
+
+  const checkPdfExists = async (key: number) => {
+    try {
+      const response = await fetch('/api/checkPdfExists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      });
+      const data = await response.json();
+      return data.exists;
+    } catch (error) {
+      console.error('Error checking PDF existence:', error);
+      return false;
+    }
+  };
+  const fetchProgramData1 = useCallback(async (day: number = selectedDay) => {
     try {
       const response = await fetch(`/api/program?day=${day}`);
       if (!response.ok) {
@@ -117,14 +133,19 @@ export default function ScientificProgram() {
       }
       const data = await response.json();
       setProgramData(data);
+         // Check PDF existence for each item
+         for (const item of data) {
+          const exists = await checkPdfExists(item.id);
+          setPdfExistence(prev => ({ ...prev, [item.id]: exists }));
+        }
     } catch (error) {
       console.error('Error fetching program data:', error);
     }
-  };
+  }, [selectedDay]);
 
   useEffect(() => {
     fetchProgramData1(selectedDay);
-  }, [selectedDay]);
+  }, [fetchProgramData1, selectedDay]);
 
   const handleEdit = (id: number | string) => {
     setEditingId(id as number);
@@ -134,7 +155,7 @@ export default function ScientificProgram() {
     const dataToUpdate = Object.fromEntries(
       Object.entries(updatedItem).filter(([key]) => key !== 'id')
     );
-    
+
     await fetch('/api/program', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -155,9 +176,8 @@ export default function ScientificProgram() {
 
   const handleAdd = async () => {
     try {
-      // Include the selectedDay in the newItem object
       const itemWithDay = { ...newItem, day: selectedDay };
-      
+
       const response = await fetch('/api/program', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -189,28 +209,28 @@ export default function ScientificProgram() {
         transition={{ duration: 0.5 }}
       >
         <h4 className="text-2xl font-semibold mb-6 text-center text-white">November 7th, 2024 (Afternoon)</h4>
-        
+
         <div className="flex justify-center space-x-4 mb-6">
-          <button 
-            onClick={() => handleDayChange(1)} 
+          <button
+            onClick={() => handleDayChange(1)}
             className={`px-4 py-2 rounded ${selectedDay === 1 ? 'bg-blue-500' : 'bg-gray-700'}`}
           >
             Day 1
           </button>
-          <button 
-            onClick={() => handleDayChange(2)} 
+          <button
+            onClick={() => handleDayChange(2)}
             className={`px-4 py-2 rounded ${selectedDay === 2 ? 'bg-blue-500' : 'bg-gray-700'}`}
           >
             Day 2
           </button>
-          <button 
-            onClick={() => handleDayChange(3)} 
+          <button
+            onClick={() => handleDayChange(3)}
             className={`px-4 py-2 rounded ${selectedDay === 3 ? 'bg-blue-500' : 'bg-gray-700'}`}
           >
             Day 3
           </button>
         </div>
-        
+
         <div className="space-y-6">
           {programData.map((item, index) => (
             <motion.div
@@ -221,40 +241,40 @@ export default function ScientificProgram() {
               className="border border-white/20 rounded-lg p-4 bg-gray-900 shadow-lg"
             >
               {editingId === item.id ? (
-                <EditForm 
-                  item={item} 
-                  onSave={handleSave} 
-                  onCancel={() => setEditingId(null)} 
-                />
+                <EditForm item={item} onSave={handleSave} onCancel={() => setEditingId(null)} />
               ) : (
                 <>
                   <p className="text-lg font-semibold mb-2 text-pink-400">{item.time}</p>
-
                   <p className="text-sm text-gray-300 whitespace-pre-line mb-4">{item.activity}</p>
-                  <Timee time={item.time} />
-                  {/* <PDFManagertow time={item.time} /> */}
+                  {/* Conditionally render <Timee /> if PDF exists */}
+                  {pdfExistence[item.id] && <Timee fileKey={item.id} />}             
+                  <PDFManagertow
+                    uniqueKey={item.id}
+                    name={item.activity.split(' ')[2] || ''}
+                    time={item.time}
+                  />
                   {item.posters && (
                     <div className="mt-4 space-y-4">
                       {item.posters.map((poster) => (
                         <div key={poster.id} className="space-y-2">
-                          <Poster 
-                            presenter={{ 
-                              id: poster.id, 
-                              presenter: poster.presenter, 
-                              topic: poster.topic 
-                            }} 
+                          <Poster
+                            presenter={{
+                              id: poster.id,
+                              presenter: poster.presenter,
+                              topic: poster.topic,
+                            }}
                             pdfId={poster.id}
                           />
                           <PDFManager poster={poster} />
                           <div className="mt-4 space-x-2">
-                            <button 
-                              onClick={() => handleEdit(item.id)} 
+                            <button
+                              onClick={() => handleEdit(item.id)}
                               className="bg-blue-500 text-white px-2 py-1 rounded"
                             >
                               Edit
                             </button>
-                            <button 
-                              onClick={() => handleDelete(item.id)} 
+                            <button
+                              onClick={() => handleDelete(item.id)}
                               className="bg-red-500 text-white px-2 py-1 rounded"
                             >
                               Delete

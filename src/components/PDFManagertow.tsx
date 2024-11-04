@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+// PDFManagertow.tsx
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
 
-// Define the interface for the poster prop
-interface Poster {
-  presenter: string;
-  topic: string;
-  id: string; // Ensure this matches the type used in your application
-}
-
 interface PDFManagertowProps {
-  poster: Poster; // Use the defined interface here
+  name: string;
+  time: string;
+  uniqueKey: string | number; // Updated to accept both string and number
 }
 
-const PDFManagertow: React.FC<PDFManagertowProps> = ({ poster }) => {
+export const PDFManagertow: React.FC<PDFManagertowProps> = ({ uniqueKey, name, time }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,15 +19,18 @@ const PDFManagertow: React.FC<PDFManagertowProps> = ({ poster }) => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("No file selected.");
+      alert('No file selected.');
       return;
     }
 
     setLoading(true);
     const formData = new FormData();
     formData.append('file', selectedFile);
-    formData.append('name', poster.presenter); // Using "name" to match the API requirement
-    formData.append('time', poster.id); // Using "time" to match the API requirement
+    formData.append('name', name);
+    formData.append('time', time);
+    formData.append('uniqueKey', String(uniqueKey)); // Convert `uniqueKey` to string
+
+
 
     try {
       const response = await fetch('/api/upload2', {
@@ -49,7 +48,7 @@ const PDFManagertow: React.FC<PDFManagertowProps> = ({ poster }) => {
       alert('An error occurred while uploading the file.');
     } finally {
       setLoading(false);
-      setSelectedFile(null); // Reset after upload
+      setSelectedFile(null);
     }
   };
 
@@ -60,9 +59,9 @@ const PDFManagertow: React.FC<PDFManagertowProps> = ({ poster }) => {
         accept=".pdf"
         onChange={handleFileChange}
         className="hidden"
-        id={`pdf-upload-${poster.id}`} // Unique ID for each input
+        id={`pdf-upload-${time}`}
       />
-      <label htmlFor={`pdf-upload-${poster.id}`}>
+      <label htmlFor={`pdf-upload-${time}`}>
         <Button variant="outline" className="cursor-pointer bg-gray-600 text-white hover:bg-gray-700 transition duration-200" asChild>
           <span className="flex items-center">
             <Upload className="w-4 h-4 mr-2" />

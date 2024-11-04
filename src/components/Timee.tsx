@@ -3,13 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 
 interface TimeeProps {
-  time: string;
+  fileKey: string | number;  // Changed from 'time' to 'fileKey' to match your usage
 }
-
-const Timee: React.FC<TimeeProps> = ({ time }) => {
+const Timee: React.FC<TimeeProps> = ({ fileKey }) => {
   const handleViewPdf = () => {
-    if (time) {
-      window.open(`/api/timee?time=${encodeURIComponent(time)}`, '_blank');
+    if (fileKey) {
+      window.open(`/api/time/${fileKey}`, '_blank');
     }
   };
 

@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react"; // Add useCallback here
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import Poster from "@/components/Poster";
@@ -26,7 +26,44 @@ export default function Component() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [programData, setProgramData] = useState<ProgramItem[]>([]);
+  const [pdfExistence, setPdfExistence] = useState<Record<number, boolean>>({});
 
+
+  const checkPdfExists = async (key: number) => {
+    try {
+      const response = await fetch('/api/checkPdfExists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      });
+      const data = await response.json();
+      return data.exists;
+    } catch (error) {
+      console.error('Error checking PDF existence:', error);
+      return false;
+    }
+  };
+  const fetchProgramData1 = useCallback(async (day: number = selectedDay) => {
+    try {
+      const response = await fetch(`/api/program?day=${day}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setProgramData(data);
+         // Check PDF existence for each item
+         for (const item of data) {
+          const exists = await checkPdfExists(item.id);
+          setPdfExistence(prev => ({ ...prev, [item.id]: exists }));
+        }
+    } catch (error) {
+      console.error('Error fetching program data:', error);
+    }
+  }, [selectedDay]);
+
+  useEffect(() => {
+    fetchProgramData1(selectedDay);
+  }, [fetchProgramData1, selectedDay]);
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 50;
@@ -153,7 +190,8 @@ export default function Component() {
               >
                 <p className="text-xl font-semibold text-white">{item.time}</p>
                 <p className="text-gray-300 mt-2 whitespace-pre-line">{item.activity}</p>
-                <Timee time={item.time} />
+                {pdfExistence[item.id] && <Timee fileKey={item.id} />}             
+
 
                 {item.posters && item.posters.length > 0 && (
                   <div className="mt-6 space-y-4">

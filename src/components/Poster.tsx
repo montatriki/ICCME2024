@@ -18,7 +18,6 @@ const Poster: React.FC<PosterProps> = ({ presenter, pdfId }) => {
     if (pdfId) {
       window.open(`/api/pdfs/${pdfId}`, '_blank');
     }
-    console.log('pdfId',pdfId)
   };
 
   return (
